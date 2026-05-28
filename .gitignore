@@ -11,6 +11,9 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+docs/
+google-services.json
+.agents
 
 # IntelliJ related
 *.iml
