@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../di/users_di.dart';
+import '../../di/users_module.dart';
 import '../viewmodels/register_viewmodel.dart';
 
 class RegisterPage extends StatefulWidget {

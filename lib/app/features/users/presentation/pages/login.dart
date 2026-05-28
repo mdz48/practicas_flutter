@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:no_screenshot/overlay_mode.dart';
 import 'package:no_screenshot/secure_widget.dart';
-import '../../di/users_di.dart';
+import '../../di/users_module.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'register.dart';
 
