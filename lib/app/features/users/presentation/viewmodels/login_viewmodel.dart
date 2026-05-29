@@ -10,8 +10,8 @@ class LoginViewModel extends ChangeNotifier {
   LoginViewModel({
     required LoginUseCase loginUseCase,
     required CheckSecurityUseCase checkSecurityUseCase,
-  })  : _loginUseCase = loginUseCase,
-        _checkSecurityUseCase = checkSecurityUseCase;
+  }) : _loginUseCase = loginUseCase,
+       _checkSecurityUseCase = checkSecurityUseCase;
 
   bool _isLoading = false;
   bool _isChecking = true;

@@ -47,7 +47,8 @@ class MyHomePage extends StatelessWidget {
             ChangeNotifierProvider<LoginViewModel>(
               create: (context) => LoginViewModel(
                 loginUseCase: appContainer.usersModule.loginUseCase,
-                checkSecurityUseCase: appContainer.usersModule.checkSecurityUseCase,
+                checkSecurityUseCase:
+                    appContainer.usersModule.checkSecurityUseCase,
               )..checkSecurity(),
               child: const LoginForm(),
             ),
@@ -57,4 +58,3 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
-

@@ -7,6 +7,8 @@ import '../viewmodels/login_viewmodel.dart';
 import '../viewmodels/register_viewmodel.dart';
 import 'register.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:noveno/app/features/appointments/presentation/screens/appointments_page.dart';
+import 'package:noveno/app/features/appointments/presentation/viewmodels/appointments_viewmodel.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -39,10 +41,17 @@ class _LoginFormState extends State<LoginForm> {
     if (!mounted) return;
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '¡Éxito! Iniciar sesión: ${viewModel.currentUser?.email}',
+      final user = viewModel.currentUser;
+      final appContainer = context.read<AppContainer>();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider<AppointmentsViewModel>(
+            create: (_) => AppointmentsViewModel(
+              getAppointmentsByOwnerUseCase:
+                  appContainer.appointmentModule.getAppointmentsByOwnerUseCase,
+            ),
+            child: AppointmentsPage(ownerId: user?.uid ?? ''),
           ),
         ),
       );
