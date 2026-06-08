@@ -13,7 +13,7 @@ class AddAppoinmentPage extends StatefulWidget {
 
 class _AddAppoinmentPageState extends State<AddAppoinmentPage> {
   final _formKey = GlobalKey<FormState>();
-  final _petIdController = TextEditingController();
+  final _petNameController = TextEditingController();
   final _reasonController = TextEditingController();
   final _dateController = TextEditingController();
   late DateTime _selectedDate;
@@ -27,7 +27,7 @@ class _AddAppoinmentPageState extends State<AddAppoinmentPage> {
 
   @override
   void dispose() {
-    _petIdController.dispose();
+    _petNameController.dispose();
     _reasonController.dispose();
     _dateController.dispose();
     super.dispose();
@@ -71,7 +71,7 @@ class _AddAppoinmentPageState extends State<AddAppoinmentPage> {
     final viewModel = context.read<AddAppointmentViewmodel>();
     final success = await viewModel.addAppointment(
       ownerId: widget.ownerId,
-      petId: _petIdController.text.trim(),
+      petName: _petNameController.text.trim(),
       date: _selectedDate,
       reason: _reasonController.text.trim(),
     );
@@ -145,9 +145,9 @@ class _AddAppoinmentPageState extends State<AddAppoinmentPage> {
                       ),
                       const SizedBox(height: 32),
                       TextFormField(
-                        controller: _petIdController,
+                        controller: _petNameController,
                         decoration: InputDecoration(
-                          labelText: 'ID de la Mascota',
+                          labelText: 'Nombre de la Mascota',
                           prefixIcon: const Icon(Icons.pets),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -160,7 +160,7 @@ class _AddAppoinmentPageState extends State<AddAppoinmentPage> {
                           ),
                         ),
                         validator: (value) => value == null || value.trim().isEmpty
-                            ? 'Por favor ingresa el ID de la mascota'
+                            ? 'Por favor ingresa el nombre de la mascota'
                             : null,
                       ),
                       const SizedBox(height: 20),

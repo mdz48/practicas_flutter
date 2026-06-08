@@ -15,7 +15,6 @@ class FirestoreAppointmentDatasource {
   ) async {
     final querySnapshot = await _appointmentsCollection
         .where('ownerId', isEqualTo: ownerId)
-        .orderBy('date', descending: true)
         .get();
 
     return querySnapshot.docs

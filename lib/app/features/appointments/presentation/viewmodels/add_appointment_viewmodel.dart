@@ -16,7 +16,7 @@ class AddAppointmentViewmodel extends ChangeNotifier {
 
   Future<bool> addAppointment({
     required String ownerId,
-    required String petId,
+    required String petName,
     required DateTime date,
     required String reason,
   }) async {
@@ -28,7 +28,7 @@ class AddAppointmentViewmodel extends ChangeNotifier {
       final appointment = AppointmentEntity(
         id: '',
         ownerId: ownerId,
-        petId: petId,
+        petName: petName,
         date: date,
         reason: reason,
       );

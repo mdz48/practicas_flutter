@@ -5,7 +5,7 @@ class AppointmentModel extends AppointmentEntity {
   AppointmentModel({
     required super.id,
     required super.ownerId,
-    required super.petId,
+    required super.petName,
     required super.date,
     required super.reason,
   });
@@ -15,7 +15,7 @@ class AppointmentModel extends AppointmentEntity {
     return AppointmentModel(
       id: doc.id,
       ownerId: data['ownerId'] ?? '',
-      petId: data['petId'] ?? '',
+      petName: data['petName'] ?? '',
       date: (data['date'] as Timestamp).toDate(),
       reason: data['reason'] ?? '',
     );
@@ -25,7 +25,7 @@ class AppointmentModel extends AppointmentEntity {
     return AppointmentModel(
       id: entity.id,
       ownerId: entity.ownerId,
-      petId: entity.petId,
+      petName: entity.petName,
       date: entity.date,
       reason: entity.reason,
     );
@@ -34,7 +34,7 @@ class AppointmentModel extends AppointmentEntity {
   Map<String, dynamic> toJson() {
     return {
       'ownerId': ownerId,
-      'petId': petId,
+      'petName': petName,
       'date': Timestamp.fromDate(date),
       'reason': reason,
     };

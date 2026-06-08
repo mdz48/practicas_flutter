@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/register_usecase.dart';
 
-class RegisterViewModel extends ChangeNotifier {
+class RegisterViewModel with ChangeNotifier {
   final RegisterUseCase _registerUseCase;
 
   RegisterViewModel({required RegisterUseCase registerUseCase})

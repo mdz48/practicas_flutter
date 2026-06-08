@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:no_screenshot/overlay_mode.dart';
 import 'package:no_screenshot/secure_widget.dart';
+import 'package:noveno/app/features/users/presentation/pages/profile_page.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/di/app_container.dart';
 import '../viewmodels/login_viewmodel.dart';
@@ -41,19 +42,21 @@ class _LoginFormState extends State<LoginForm> {
     if (!mounted) return;
 
     if (success) {
-      final user = viewModel.currentUser;
-      final appContainer = context.read<AppContainer>();
+      // final user = viewModel.currentUser;
+      // final appContainer = context.read<AppContainer>();
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider<AppointmentsViewModel>(
-            create: (_) => AppointmentsViewModel(
-              getAppointmentsByOwnerUseCase:
-                  appContainer.appointmentModule.getAppointmentsByOwnerUseCase,
-            ),
-            child: AppointmentsPage(ownerId: user?.uid ?? ''),
-          ),
-        ),
+        // MaterialPageRoute(
+        //   builder: (context) => ChangeNotifierProvider<AppointmentsViewModel>(
+        //     create: (_) => AppointmentsViewModel(
+        //       getAppointmentsByOwnerUseCase:
+        //           appContainer.appointmentModule.getAppointmentsByOwnerUseCase,
+        //     ),
+        //     child: AppointmentsPage(ownerId: user?.uid ?? ''),
+        //   ),
+        // ),
+        // SOLO PARA MAÑANA
+        MaterialPageRoute(builder: (context) => const ProfilePage()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
