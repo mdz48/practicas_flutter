@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:no_screenshot/overlay_mode.dart';
 import 'package:no_screenshot/secure_widget.dart';
 import 'package:geolocator/geolocator.dart';
+import 'register_page.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -43,7 +44,8 @@ class _LoginFormState extends State<LoginForm> {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) throw 'Se requiere permiso de ubicación.';
+        if (permission == LocationPermission.denied)
+          throw 'Se requiere permiso de ubicación.';
       }
       if (permission == LocationPermission.deniedForever) {
         throw 'Permiso de ubicación denegado permanentemente.';
@@ -52,7 +54,8 @@ class _LoginFormState extends State<LoginForm> {
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-      if (position.isMocked) throw 'Ubicación simulada (Fake GPS) detectada. Acceso bloqueado.';
+      if (position.isMocked)
+        throw 'Ubicación simulada (Fake GPS) detectada. Acceso bloqueado.';
 
       setState(() => _isChecking = false);
     } catch (e) {
@@ -67,7 +70,9 @@ class _LoginFormState extends State<LoginForm> {
   void _submitForm() {
     if (!_formKey.currentState!.validate()) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('¡Éxito! Iniciar sesión: ${_emailController.text}')),
+      SnackBar(
+        content: Text('¡Éxito! Iniciar sesión: ${_emailController.text}'),
+      ),
     );
   }
 
@@ -89,7 +94,10 @@ class _LoginFormState extends State<LoginForm> {
               children: [
                 const Icon(Icons.error_outline, color: Colors.red, size: 48),
                 const SizedBox(height: 16),
-                const Text('Acceso Denegado', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Acceso Denegado',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 12),
                 Text(_errorMessage, textAlign: TextAlign.center),
                 const SizedBox(height: 24),
@@ -118,15 +126,24 @@ class _LoginFormState extends State<LoginForm> {
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(labelText: 'Correo Electrónico', border: OutlineInputBorder()),
-                validator: (value) => value == null || value.isEmpty ? 'Ingresa tu correo' : null,
+                decoration: const InputDecoration(
+                  labelText: 'Correo Electrónico',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Ingresa tu correo' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(labelText: 'Contraseña', border: OutlineInputBorder()),
-                validator: (value) => value == null || value.isEmpty ? 'Ingresa tu contraseña' : null,
+                decoration: const InputDecoration(
+                  labelText: 'Contraseña',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Ingresa tu contraseña'
+                    : null,
               ),
               const SizedBox(height: 24),
               ElevatedButton(
@@ -134,7 +151,17 @@ class _LoginFormState extends State<LoginForm> {
                 child: const Text('Iniciar Sesión'),
               ),
               const SizedBox(height: 8),
-              TextButton(onPressed: () {}, child: const Text('Registrarme')),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterPage(),
+                    ),
+                  );
+                },
+                child: const Text('Registrarme'),
+              ),
             ],
           ),
         ),
