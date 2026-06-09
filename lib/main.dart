@@ -17,12 +17,15 @@ void main() async {
   );
 }
 
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: scaffoldMessengerKey,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
       title: 'Flutter Demo',

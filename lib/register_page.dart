@@ -150,6 +150,23 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  Future<void> _checkDataStatus() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload(); // Refrescar los datos directamente del almacenamiento del teléfono
+    final bool hasData = prefs.containsKey('hashed_nombre');
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(hasData 
+              ? ' Sí hay datos encriptados guardados localmente.' 
+              : ' No hay ningún dato guardado.'),
+          backgroundColor: hasData ? Colors.green : Colors.orange,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -224,6 +241,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     OutlinedButton(
                       onPressed: _validateData,
                       child: const Text('Validar datos'),
+                    ),
+                    const SizedBox(height: 12),
+                    OutlinedButton(
+                      onPressed: _checkDataStatus,
+                      child: const Text('Verificar estado de datos'),
                     ),
                   ],
                 ],
