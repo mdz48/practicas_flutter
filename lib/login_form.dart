@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:no_screenshot/overlay_mode.dart';
 import 'package:no_screenshot/secure_widget.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:local_session_timeout/local_session_timeout.dart';
+import 'dashboard_page.dart';
 import 'register_page.dart';
+import 'main.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -67,13 +71,32 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (!_formKey.currentState!.validate()) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('¡Éxito! Iniciar sesión: ${_emailController.text}'),
-      ),
-    );
+    setState(() => _isLoading = true);
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      if (mounted) {
+        sessionStateStream.add(SessionState.startListening);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardPage()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al iniciar sesión: ${e.message}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override

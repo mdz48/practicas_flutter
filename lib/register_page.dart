@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:bcrypt/bcrypt.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 Map<String, String> _hashData(Map<String, String> data) {
   final salt = BCrypt.gensalt();
@@ -38,6 +39,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _apellidoController = TextEditingController();
   final _ciudadController = TextEditingController();
   final _telefonoController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _isLoading = false;
 
   @override
@@ -46,6 +49,8 @@ class _RegisterPageState extends State<RegisterPage> {
     _apellidoController.dispose();
     _ciudadController.dispose();
     _telefonoController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -55,6 +60,8 @@ class _RegisterPageState extends State<RegisterPage> {
       _apellidoController.text = 'Pérez';
       _ciudadController.text = 'Guadalajara';
       _telefonoController.text = '3312345678';
+      _emailController.text = 'juan.perez@example.com';
+      _passwordController.text = '123456';
     });
   }
 
@@ -69,6 +76,8 @@ class _RegisterPageState extends State<RegisterPage> {
     final String apellido = _apellidoController.text;
     final String ciudad = _ciudadController.text;
     final String telefono = _telefonoController.text;
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
 
     final hashedData = await compute(_hashData, {
       'nombre': nombre,
@@ -83,15 +92,35 @@ class _RegisterPageState extends State<RegisterPage> {
     await prefs.setString('hashed_ciudad', hashedData['ciudad']!);
     await prefs.setString('hashed_telefono', hashedData['telefono']!);
 
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Datos encriptados y guardados con éxito'),
-        ),
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
       );
+      
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Usuario registrado en Firebase y datos guardados localmente'),
+          ),
+        );
+        Navigator.pop(context); // Volver al login
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al registrar en Firebase: ${e.message}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -184,6 +213,28 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      labelText: 'Correo Electrónico',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Ingresa tu correo' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Contraseña (min 6 caracteres)',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) =>
+                        value == null || value.isEmpty || value.length < 6 ? 'Ingresa una contraseña válida' : null,
+                  ),
+                  const SizedBox(height: 16),
                   TextFormField(
                     controller: _nombreController,
                     decoration: const InputDecoration(

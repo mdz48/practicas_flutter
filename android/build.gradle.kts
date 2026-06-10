@@ -22,3 +22,14 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+
+subprojects {
+    project.evaluationDependsOn(":app")
+    
+    // Provide a fallback dummy flutter object to prevent evaluation failures
+    project.ext.set("flutter", mapOf(
+        "compileSdkVersion" to 34,
+        "minSdkVersion" to 21,
+        "targetSdkVersion" to 34
+    ))
+}
