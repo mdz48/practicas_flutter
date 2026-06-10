@@ -16,12 +16,18 @@ Map<String, String> _hashData(Map<String, String> data) {
 bool _checkData(Map<String, dynamic> args) {
   final data = args['data'] as Map<String, String>;
   final stored = args['stored'] as Map<String, String>;
-  
+
   final nombreMatches = BCrypt.checkpw(data['nombre']!, stored['nombre']!);
-  final apellidoMatches = BCrypt.checkpw(data['apellido']!, stored['apellido']!);
+  final apellidoMatches = BCrypt.checkpw(
+    data['apellido']!,
+    stored['apellido']!,
+  );
   final ciudadMatches = BCrypt.checkpw(data['ciudad']!, stored['ciudad']!);
-  final telefonoMatches = BCrypt.checkpw(data['telefono']!, stored['telefono']!);
-  
+  final telefonoMatches = BCrypt.checkpw(
+    data['telefono']!,
+    stored['telefono']!,
+  );
+
   return nombreMatches && apellidoMatches && ciudadMatches && telefonoMatches;
 }
 
@@ -87,6 +93,10 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         _isLoading = false;
       });
+      _nombreController.clear();
+      _apellidoController.clear();
+      _ciudadController.clear();
+      _telefonoController.clear();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Datos encriptados y guardados con éxito'),
@@ -102,7 +112,10 @@ class _RegisterPageState extends State<RegisterPage> {
     final String? storedCiudad = prefs.getString('hashed_ciudad');
     final String? storedTelefono = prefs.getString('hashed_telefono');
 
-    if (storedNombre == null || storedApellido == null || storedCiudad == null || storedTelefono == null) {
+    if (storedNombre == null ||
+        storedApellido == null ||
+        storedCiudad == null ||
+        storedTelefono == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -134,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'apellido': storedApellido,
         'ciudad': storedCiudad,
         'telefono': storedTelefono,
-      }
+      },
     });
 
     if (mounted) {
@@ -144,35 +157,55 @@ class _RegisterPageState extends State<RegisterPage> {
       final String message = allMatches
           ? 'Los datos ingresados coinciden con los guardados'
           : 'Los datos ingresados NO coinciden con los guardados';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
   Future<void> _checkDataStatus() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload(); // Refrescar los datos directamente del almacenamiento del teléfono
+    await prefs
+        .reload(); // Refrescar los datos directamente del almacenamiento del teléfono
     final bool hasData = prefs.containsKey('hashed_nombre');
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(hasData 
-              ? ' Sí hay datos encriptados guardados localmente.' 
-              : ' No hay ningún dato guardado.'),
+          content: Text(
+            hasData
+                ? ' Sí hay datos encriptados guardados localmente.'
+                : ' No hay ningún dato guardado.',
+          ),
           backgroundColor: hasData ? Colors.green : Colors.orange,
         ),
       );
     }
   }
 
+  Future<void> _clearData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('hashed_nombre');
+    await prefs.remove('hashed_apellido');
+    await prefs.remove('hashed_ciudad');
+    await prefs.remove('hashed_telefono');
+
+    _nombreController.clear();
+    _apellidoController.clear();
+    _ciudadController.clear();
+    _telefonoController.clear();
+
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Datos eliminados')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Registro'),
-      ),
+      appBar: AppBar(title: const Text('Registro')),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -190,8 +223,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       labelText: 'Nombre',
                       border: OutlineInputBorder(),
                     ),
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Ingresa tu nombre' : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Ingresa tu nombre'
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -200,8 +234,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       labelText: 'Apellido',
                       border: OutlineInputBorder(),
                     ),
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Ingresa tu apellido' : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Ingresa tu apellido'
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -210,8 +245,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       labelText: 'Ciudad de nacimiento',
                       border: OutlineInputBorder(),
                     ),
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Ingresa tu ciudad de nacimiento' : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Ingresa tu ciudad de nacimiento'
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -221,8 +257,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       labelText: 'Número de teléfono',
                       border: OutlineInputBorder(),
                     ),
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Ingresa tu teléfono' : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Ingresa tu teléfono'
+                        : null,
                   ),
                   const SizedBox(height: 24),
                   if (_isLoading)
@@ -246,6 +283,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     OutlinedButton(
                       onPressed: _checkDataStatus,
                       child: const Text('Verificar estado de datos'),
+                    ),
+                    const SizedBox(height: 12),
+                    OutlinedButton(
+                      onPressed: _clearData,
+                      child: const Text('Eliminar datos'),
                     ),
                   ],
                 ],
