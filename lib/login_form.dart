@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:no_screenshot/overlay_mode.dart';
 import 'package:no_screenshot/secure_widget.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:safe_device/safe_device.dart';
+import 'package:provider/provider.dart';
 import 'register_page.dart';
+import 'dashboard_page.dart';
+import 'session_provider.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -69,10 +74,20 @@ class _LoginFormState extends State<LoginForm> {
 
   void _submitForm() {
     if (!_formKey.currentState!.validate()) return;
+    
+    // Iniciar el temporizador de sesión
+    context.read<SessionProvider>().startSession();
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('¡Éxito! Iniciar sesión: ${_emailController.text}'),
       ),
+    );
+
+    // Navegar de forma destructiva al dashboard
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const DashboardPage()),
+      (route) => false,
     );
   }
 
